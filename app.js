@@ -1,14 +1,29 @@
 let ws = null;
 
 let cloudParticles = [];
+let scene = new THREE.Scene();
 let loader = new THREE.TextureLoader();
 let nebula = nebulaNew();
 let ambient = new THREE.AmbientLight(0xaaaaaa);
+let directinalLight = new THREE.DirectionalLight(0xff8c19);
+directinalLight.position.set(0,0,1);
 
-let scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0xffffff, 0.001);
+let orangeLight = new THREE.PointLight(0xcc6600, 50,450,1.7);
+orangeLight.position.set(200,300,100);
+scene.add(orangeLight);
+
+let redLight = new THREE.PointLight(0xd8547e, 50,450,1.7);
+redLight.position.set(200,300,100);
+scene.add(redLight);
+
+let blueLight = new THREE.PointLight(0x3677ac, 50,450,1.7);
+blueLight.position.set(300,300,200);
+scene.add(blueLight);
+
+scene.fog = new THREE.FogExp2(0x000000, 0.001);
 scene.add(ambient);
 scene.add(nebula);
+scene.add(directinalLight);
 
 let camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 1000);
 camera.position.z = 1;
@@ -16,6 +31,8 @@ camera.position.z = 1;
 camera.rotation.x = 1.16;
 camera.rotation.y = -0.12;
 camera.rotation.z = 0.27;
+
+
 
 let renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -86,7 +103,7 @@ function nebulaNew() {
             transparent: true
         });
 
-        for (let p = 0; p < 54; p++) {
+        for (let p = 0; p < 60; p++) {
             let cloud = new THREE.Mesh(cloudGeo, cloudMaterial);
             cloud.position.set(
                 Math.random() * 800 - 400,
