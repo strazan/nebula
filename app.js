@@ -56,7 +56,16 @@ function render() {
     renderer.render(scene, camera);
 }
 let audio = new Audio("/audio/hearbeat.mp3");
+
+let isPlaying = false;
+
+document.getElementById('overlay').onclick = function() {
+    isPlaying = true;
+}
+
+
 function audioPlay () {
+
 
     audio.pause();
     audio.currentTime = 0;
@@ -68,7 +77,10 @@ function nebulaPulse() {
     nebulaGrow();
 
     // add sound method here Johan
-    audioPlay();
+
+    if (isPlaying){
+        audioPlay();
+    }
 }
 
 function nebulaGrow() {
