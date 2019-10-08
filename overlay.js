@@ -1,7 +1,8 @@
 function off() {
     document.getElementById("overlay").style.display = "none";
   }
-<<<<<<< Updated upstream
- 
-=======
->>>>>>> Stashed changes
+
+ let overlay = document.getElementById("overlay")
+
+ overlay.onclick() = off();
+
