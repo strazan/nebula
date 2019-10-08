@@ -55,13 +55,17 @@ function update() {
 function render() {
     renderer.render(scene, camera);
 }
-let audio = new Audio("/audio/hearbeat.mp3");
+let audio = new Audio("/audio/hearbeat.mp3"); //variable for mp3
 
-let isPlaying = false;
+let isPlaying = false; //boolean for isPlaying
 
-document.getElementById('overlay').onclick = function() {
+let idGet = document.getElementById("overlay"); //variable for getting html element
+
+idGet.addEventListener("click", function(){ 
     isPlaying = true;
-}
+ }); //listens for click and executes function
+
+
 
 
 function audioPlay () {
@@ -73,6 +77,7 @@ function audioPlay () {
 
 }
 
+
 function nebulaPulse() {
     nebulaGrow();
 
@@ -80,7 +85,7 @@ function nebulaPulse() {
 
     if (isPlaying){
         audioPlay();
-    }
+    } //checks if isPlaying is true
 }
 
 function nebulaGrow() {
