@@ -68,12 +68,21 @@ function render() {
     camera.rotation.z += 0.0006;
     renderer.render(scene, camera);
 }
+let audio = new Audio("/audio/hearbeat.mp3");
+function audioPlay () {
+
+    audio.pause();
+    audio.currentTime = 0;
+    audio.play();
+
+}
 
 function nebulaPulse() {
 
     nebulaGrow();
 
     // add sound method here Johan
+    audioPlay();
 }
 
 function nebulaGrow() {
