@@ -4,8 +4,6 @@ let cloudParticles = [];
 let scene = new THREE.Scene();
 let loader = new THREE.TextureLoader();
 let nebula;
-let osSolarSystemSunPivotPoint, osSolarSystemSun;
-let macOsPivotPoint;
 
 let ambient = new THREE.AmbientLight(0x555555);
 scene.add(ambient);
@@ -26,22 +24,27 @@ let blueLight = new THREE.SpotLight(0x3677ac, 4, 2050);
 blueLight.position.set(-50, 100, 400);
 scene.add(blueLight);
 
-// ?
-let osSolarSystemLight = new THREE.SpotLight(0xffffff, 0.2, 350);
-osSolarSystemLight.position.set(-40, 40, 900);
-scene.add(osSolarSystemLight);
+let osSolarSystemSunPivotPoint, osSolarSystemSun;
+let macOsPivotPoint;
+let macOsPlanet, linuxPlanet, windowsPlanet;
 
-let osSolarSystemSunLight = new THREE.PointLight(0xffffff, 0.8, 100);
-osSolarSystemSunLight.position.set(40, 40, 600);
+// ?
+// let osSolarSystemLight = new THREE.SpotLight(0xffffff, 0.2, 350);
+// osSolarSystemLight.position.set(-40, 40, 900);
+// scene.add(osSolarSystemLight);
+
+let osSolarSystemSunLight = new THREE.PointLight(0xffffff, 3, 300);
+osSolarSystemSunLight.position.set(25, 38, 560);
 scene.add(osSolarSystemSunLight);
 
 let osSolarSystemSunLightOn = new THREE.PointLight(0xffffff, 0.2, 55);
 osSolarSystemSunLightOn.position.set(40, 40, 619);
 scene.add(osSolarSystemSunLightOn);
 
+let languageSolarSystemSunPivotPoint, languageSolarSystemSun;
+// let langPlanetJS;
+
 scene.fog = new THREE.FogExp2(0x000000, 0.001);
-
-
 
 let camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 3000);
 camera.position.z = 1000;
@@ -53,12 +56,27 @@ document.body.appendChild(renderer.domElement);
 
 createNebula();
 createOsSolarSystem();
+createLanguageSolarSystem();
 
 let buffer = 0;
+
 let osMacOs = 0;
-let osMacOsMoons = [[100,false],[200,false],[400,false],[800,false],[1600,false],[3200,false]];
 let osLinux = 0;
 let osWindows = 0;
+
+let osMacOsMoons = [],
+    osLinuxMoons = [],
+    osWindowsMoons = [];
+for (i = 0; i < 10; i++) {
+    console.log(i);
+    osMacOsMoons.push([1 * (Math.pow(2, i)) * 100, false]);
+    osLinuxMoons.push([1 * (Math.pow(2, i)) * 100, false]);
+    osWindowsMoons.push([1 * (Math.pow(2, i)) * 100, false]);
+}
+
+let linusPivotPoints = [];
+let macOsPivotPoints = [];
+let windowsPivotPoints = [];
 
 
 window.addEventListener('resize', onWindowResize, false);
@@ -68,12 +86,12 @@ let onmessage = function (e) {
     buffer++;
     let data = JSON.parse(e.data);
     let os = data.data.config.os;
-    
-    if(os === 'linux' || os === 'linux-ppc64le'){
+
+    if (os === 'linux' || os === 'linux-ppc64le') {
         osLinux++;
-    } else  if(os === 'osx'){
+    } else if (os === 'osx') {
         osMacOs++;
-    } else if(os === 'windows'){
+    } else if (os === 'windows') {
         osWindows++;
     }
 };
@@ -101,7 +119,8 @@ function nebulaPulse() {
 }
 
 function nebulaGrow() {
-console.log(osMacOs);
+    console.log('mac: ' + osMacOs);
+    console.log('linux: ' + osLinux);
     let grow = setInterval(function () {
         if (nebula.scale.x < 2) {
             nebula.scale.x += 0.002;
@@ -156,7 +175,7 @@ function createOsSolarSystem() {
     /*
      * SUN
      */
-    const sunGeo = new THREE.SphereGeometry(5, 60, 60);
+    const sunGeo = new THREE.SphereGeometry(2, 60, 60);
     const sunMat = new THREE.MeshLambertMaterial();
     sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
     osSolarSystemSun = new THREE.Mesh(sunGeo, sunMat);
@@ -173,36 +192,22 @@ function createOsSolarSystem() {
      */
     const macGeo = new THREE.SphereGeometry(3, 70, 70);
     const macMat = new THREE.MeshLambertMaterial();
-    macMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
-    let macOsPlanet = new THREE.Mesh(macGeo, macMat);
-    macOsPlanet.position.set(20, 2, 20);
+    macMat.map = THREE.ImageUtils.loadTexture('images/earthmap1k.jpg')
+    macOsPlanet = new THREE.Mesh(macGeo, macMat);
+    macOsPlanet.position.set(Math.sin(360/4)*20, -3, Math.cos(360/4)*20);
+    macOsPlanet.rotation.x = 0.15;
     osSolarSystemSunPivotPoint.add(macOsPlanet);
 
-    macOsPivotPoint = new THREE.Object3D();
-    macOsPlanet.add(macOsPivotPoint);
-
-    /*
-     * MacOS Moons
-     */
-    // const macMoonGeo = new THREE.SphereGeometry(1, 70, 70);
-    // const macMoonMat = new THREE.MeshLambertMaterial();
-    // macMoonMat.map = THREE.ImageUtils.loadTexture('images/jupiter.jpg')
-    // let macOsMoon2 = new THREE.Mesh(macMoonGeo, macMoonMat);
-    // macOsMoon2.position.set(6, -1, 2);
-    // macOsPivotPoint.add(macOsMoon2);
-    
     /*
      * Linus Planet
      */
     const linGeo = new THREE.SphereGeometry(3, 70, 70);
-    const linMat = new THREE.MeshLambertMaterial({color: 0x0000ff});
-    // linMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
-    let linuxPlanet = new THREE.Mesh(linGeo, linMat);
-    linuxPlanet.position.set(-20, -2, 10);
+    const linMat = new THREE.MeshLambertMaterial();
+    linMat.map = THREE.ImageUtils.loadTexture('images/jupiter.jpg')
+    linuxPlanet = new THREE.Mesh(linGeo, linMat);
+    linuxPlanet.position.set(Math.sin((360/4)*2)*20, -3, Math.cos((360/4)*2)*20);
+    linuxPlanet.rotation.x = 0.15;
     osSolarSystemSunPivotPoint.add(linuxPlanet);
-
-    linuxPivotPoint = new THREE.Object3D();
-    linuxPlanet.add(linuxPivotPoint);
 
     /*
      * Windows Planet
@@ -210,23 +215,51 @@ function createOsSolarSystem() {
     const winGeo = new THREE.SphereGeometry(3, 70, 70);
     const winMat = new THREE.MeshLambertMaterial();
     winMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
-    let windowsPlanet = new THREE.Mesh(winGeo, winMat);
-    windowsPlanet.position.set(10, 4, -20);
+    windowsPlanet = new THREE.Mesh(winGeo, winMat);
+    // langPlanetJS.position.set(Math.sin((360/14)*i)*20, -3, Math.cos((360/14)*i)*20);
+    windowsPlanet.position.set(Math.sin((360/4)*3)*20, -3, Math.cos((360/4)*3)*20);
+    windowsPlanet.rotation.x = 0.15;
     osSolarSystemSunPivotPoint.add(windowsPlanet);
 
-    windowsPivotPoint = new THREE.Object3D();
-    windowsPlanet.add(linuxPivotPoint);
-
-
-    // let planet2 = new THREE.Mesh(macGeo, macMat);
-    // planet2.position.set(-20, 2, -6);
-
-    // sun.rotation.y = -0.5;
-    // macOsSolarSystemSunPivotPoint.add(planet2);
     scene.add(osSolarSystemSun);
-    // scene.add(pivotPoint);
-    // scene.add(macOsSolarSystemSunPivotPoint);
 
+}
+
+function createLanguageSolarSystem() {
+    const sunGeo = new THREE.SphereGeometry(2, 60, 60);
+    const sunMat = new THREE.MeshLambertMaterial();
+    sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
+    languageSolarSystemSun = new THREE.Mesh(sunGeo, sunMat);
+
+    languageSolarSystemSun.position.x = -40;
+    languageSolarSystemSun.position.y = -40;
+    languageSolarSystemSun.position.z = 600;
+
+    languageSolarSystemSunPivotPoint = new THREE.Object3D();
+    languageSolarSystemSun.add(languageSolarSystemSunPivotPoint);
+
+    /*
+     * Planets <3
+     */
+
+    for (i = 0; i < 3; i++) {
+        const langPlanetGeo = new THREE.SphereGeometry(3, 70, 70);
+        const langPlanetMat = new THREE.MeshLambertMaterial();
+        langPlanetMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
+        let langPlanetJS = new THREE.Mesh(langPlanetGeo, langPlanetMat);
+        langPlanetJS.position.set(Math.sin((360/4)*i)*20, -3, Math.cos((360/4)*i)*20);
+        //    windowsPlanet.rotation.x = 0.15;
+        languageSolarSystemSunPivotPoint.add(langPlanetJS);
+    }
+    //    const langPlanetGeo = new THREE.SphereGeometry(3, 70, 70);
+    //    const langPlanetMat = new THREE.MeshLambertMaterial();
+    //    langPlanetMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
+    //    langPlanetJS = new THREE.Mesh(langPlanetGeo, langPlanetMat);
+    //    langPlanetJS.position.set(10, -3, -20);
+    // //    windowsPlanet.rotation.x = 0.15;
+    // languageSolarSystemSunPivotPoint.add(langPlanetJS);
+
+    scene.add(languageSolarSystemSun);
 }
 
 /*
@@ -235,7 +268,7 @@ function createOsSolarSystem() {
 function rotateNebulaParts(nebula) {
     if (Math.floor(Math.random() * 100) === 3) {
         shuffleArray(nebula);
-       
+
 
     }
     nebula.forEach((neb, i) => {
@@ -249,33 +282,100 @@ function rotateNebulaParts(nebula) {
     });
 }
 
-function addOsMoon(pivotPoint){
- const macMoonGeo = new THREE.SphereGeometry(1, 70, 70);
-        const macMoonMat = new THREE.MeshLambertMaterial();
-        macMoonMat.map = THREE.ImageUtils.loadTexture('images/jupiter.jpg')
-        let macOsMoon2 = new THREE.Mesh(macMoonGeo, macMoonMat);
-        macOsMoon2.position.set(10 - Math.floor(Math.random()*20), 10 - Math.floor(Math.random()*20), 10 - Math.floor(Math.random()*20));
-        pivotPoint.add(macOsMoon2);
+function addOsMoon(pivotPoint) {
+    const moonGeo = new THREE.SphereGeometry(1, 70, 70);
+    const moonMat = new THREE.MeshLambertMaterial({
+        color: 0xffffff
+    });
+    // moonMat.map = THREE.ImageUtils.loadTexture('images/jupiter.jpg')
+    let moon = new THREE.Mesh(moonGeo, moonMat);
+    moon.position.set(4, 0, 4);
+    pivotPoint.add(moon);
 }
 
-function updateMoons(){
-    osMacOsMoons.forEach((moonMap,i) => {
-        if(osMacOs >= moonMap[0] && moonMap[1] === false){
-            addOsMoon(macOsPivotPoint);
+function updateMoons() {
+    osMacOsMoons.forEach((moonMap, i) => {
+        if (osMacOs >= moonMap[0] && moonMap[1] === false) {
+            let pivPoint = new THREE.Object3D();
+            let rotationSpeed = Math.random() * 5 / 200 + 0.01;
+            if (i % 2 === 0) {
+                rotationSpeed = -rotationSpeed;
+            }
+            pivPoint.rotation.x = +Math.random() * 2;
+            macOsPlanet.add(pivPoint);
+            macOsPivotPoints.push([pivPoint, rotationSpeed]);
+            addOsMoon(pivPoint);
             moonMap[1] = true;
-            return;
+
         }
     });
+
+    osLinuxMoons.forEach((moonMap, i) => {
+        if (osLinux >= moonMap[0] && moonMap[1] === false) {
+            let pivPoint = new THREE.Object3D();
+            let rotationSpeed = Math.random() * 5 / 200 + 0.01;
+            if (i % 2 === 0) {
+                rotationSpeed = -rotationSpeed;
+            }
+            pivPoint.rotation.x = +Math.random() * 2;
+            linuxPlanet.add(pivPoint);
+            linusPivotPoints.push([pivPoint, rotationSpeed]);
+            addOsMoon(pivPoint);
+            moonMap[1] = true;
+
+        }
+    });
+    osWindowsMoons.forEach((moonMap, i) => {
+        if (osWindows >= moonMap[0] && moonMap[1] === false) {
+            let pivPoint = new THREE.Object3D();
+            let rotationSpeed = Math.random() * 5 / 200 + 0.01;
+            if (i % 2 === 0) {
+                rotationSpeed = -rotationSpeed;
+            }
+            pivPoint.rotation.x = +Math.random() * 2;
+            windowsPlanet.add(pivPoint);
+            windowsPivotPoints.push([pivPoint, rotationSpeed]);
+            addOsMoon(pivPoint);
+            moonMap[1] = true;
+
+        }
+    });
+
 }
 
 function updateSolarSystems() {
+
+    var time = Date.now() * 0.0001;
+    osSolarSystemSun.position.x = osSolarSystemSun.position.x + Math.cos(time * 10) * 0.01;
+    osSolarSystemSun.position.y = osSolarSystemSun.position.y + Math.cos(time * 70) * 0.015;
+    // osSolarSystemSun.position.z = Math.cos( time * 8 ) * 4;
+
     osSolarSystemSunPivotPoint.rotation.y += 0.018;
     osSolarSystemSun.rotation.y -= 0.003;
 
-    macOsPivotPoint.rotation.y -= 0.07;
-    macOsPivotPoint.rotation.x -= 0.0003;
+    languageSolarSystemSunPivotPoint.rotation.y -= 0.012;
+
+    macOsPlanet.rotation.y -= 0.02;
+    linuxPlanet.rotation.y -= 0.02;
+    windowsPlanet.rotation.y -= 0.02;
 
     updateMoons();
+    rotateMoons();
+}
+
+function rotateMoons() {
+    linusPivotPoints.forEach((pp) => {
+        pp[0].rotation.y += pp[1];
+        // pp[0].rotation.y -= pp[1] / 400;
+    });
+    macOsPivotPoints.forEach((pp) => {
+        pp[0].rotation.y += pp[1];
+        // pp[0].rotation.y -= pp[1] / 400;
+    });
+    windowsPivotPoints.forEach((pp) => {
+        pp[0].rotation.y += pp[1];
+        // pp[0].rotation.y -= pp[1] / 400;
+    });
 }
 
 /*
