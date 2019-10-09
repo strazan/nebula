@@ -251,13 +251,6 @@ function createLanguageSolarSystem() {
         //    windowsPlanet.rotation.x = 0.15;
         languageSolarSystemSunPivotPoint.add(langPlanetJS);
     }
-    //    const langPlanetGeo = new THREE.SphereGeometry(3, 70, 70);
-    //    const langPlanetMat = new THREE.MeshLambertMaterial();
-    //    langPlanetMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
-    //    langPlanetJS = new THREE.Mesh(langPlanetGeo, langPlanetMat);
-    //    langPlanetJS.position.set(10, -3, -20);
-    // //    windowsPlanet.rotation.x = 0.15;
-    // languageSolarSystemSunPivotPoint.add(langPlanetJS);
 
     scene.add(languageSolarSystemSun);
 }
@@ -268,8 +261,6 @@ function createLanguageSolarSystem() {
 function rotateNebulaParts(nebula) {
     if (Math.floor(Math.random() * 100) === 3) {
         shuffleArray(nebula);
-
-
     }
     nebula.forEach((neb, i) => {
         if (i % 3 === 0) {
@@ -287,7 +278,7 @@ function addOsMoon(pivotPoint) {
     const moonMat = new THREE.MeshLambertMaterial({
         color: 0xffffff
     });
-    // moonMat.map = THREE.ImageUtils.loadTexture('images/jupiter.jpg')
+
     let moon = new THREE.Mesh(moonGeo, moonMat);
     moon.position.set(4, 0, 4);
     pivotPoint.add(moon);
