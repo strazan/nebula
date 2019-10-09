@@ -4,7 +4,46 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
 canvas {
     width: 100%;
     height: 100%;
+    position: fixed;
+}
+
+h2 {
+    color: #fff;
+    text-align: center;
+    font-size: 50px;
+}
+.legend {
+    position: absolute;
+    margin-top: 94vh;
+    width: 100%;
+    color: #fff;
+    font-size: 25px;
+    font-family: adam;
+    height: 100vh;
+}
+
+.grid-table {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+}
+
+.legend .box {
+    background-color: rgb(39, 38, 38, 0.4);
+    padding: 100px;
+    margin: 60px;
+}
+
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70px;
+    text-align: center;
 }
