@@ -532,7 +532,7 @@ function showLanguageText(lang) {
 
         let material1 = new THREE.MeshBasicMaterial({ //material for font
             color: 0xE5A774,
-            opacity: 2
+            opacity: 0.9
         });
 
         material1.transparent = true; //this is for opacity to work
