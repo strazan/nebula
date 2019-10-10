@@ -252,8 +252,10 @@ function createOsSolarSystem() {
      * MacOS Planet
      */
     const macGeo = new THREE.SphereGeometry(3, 70, 70);
-    const macMat = new THREE.MeshLambertMaterial();
+    const macMat = new THREE.MeshPhongMaterial();
     macMat.map = THREE.ImageUtils.loadTexture('images/earthmap1k.jpg')
+    macMat.bumpMap = THREE.ImageUtils.loadTexture('images/earthbump1k.jpg');
+
     macOsPlanet = new THREE.Mesh(macGeo, macMat);
     macOsPlanet.position.set(Math.sin(360 / 4) * 20, -3, Math.cos(360 / 4) * 20);
     macOsPlanet.rotation.x = 0.15;
@@ -263,7 +265,7 @@ function createOsSolarSystem() {
      * Linus Planet
      */
     const linGeo = new THREE.SphereGeometry(3, 70, 70);
-    const linMat = new THREE.MeshLambertMaterial();
+    const linMat = new THREE.MeshPhongMaterial();
     linMat.map = THREE.ImageUtils.loadTexture('images/jupiter.jpg')
     linuxPlanet = new THREE.Mesh(linGeo, linMat);
     linuxPlanet.position.set(Math.sin((360 / 4) * 2) * 20, -3, Math.cos((360 / 4) * 2) * 20);
@@ -274,8 +276,10 @@ function createOsSolarSystem() {
      * Windows Planet
      */
     const winGeo = new THREE.SphereGeometry(3, 70, 70);
-    const winMat = new THREE.MeshLambertMaterial();
-    winMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
+    const winMat = new THREE.MeshPhongMaterial();
+    winMat.map = THREE.ImageUtils.loadTexture('images/mars_1k_color.jpg');
+    winMat.bumpMap = THREE.ImageUtils.loadTexture('images/marsbump1k.jpg');
+
     windowsPlanet = new THREE.Mesh(winGeo, winMat);
     // langPlanetJS.position.set(Math.sin((360/14)*i)*20, -3, Math.cos((360/14)*i)*20);
     windowsPlanet.position.set(Math.sin((360 / 4) * 3) * 20, -3, Math.cos((360 / 4) * 3) * 20);
@@ -311,9 +315,10 @@ function createNewLanguagePlanet(obj) {
     const langPlanetGeo = new THREE.SphereGeometry(0.8, 70, 70);
     let color = parseInt(getRandomColor());
 
-    const langPlanetMat = new THREE.MeshLambertMaterial({
+    const langPlanetMat = new THREE.MeshPhongMaterial({
         color: color
     });
+    langPlanetMat.bumpMap = THREE.ImageUtils.loadTexture('images/venusbump.jpg');
     // langPlanetMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
 
     let langPlanet = new THREE.Mesh(langPlanetGeo, langPlanetMat);
@@ -443,9 +448,9 @@ function updateSolarSystems() {
     // languageSolarSystemSunPivotPoint.rotation.y -= 0.002;
     // languageSolarSystemSun.rotation.y += 0.004;
 
-    macOsPlanet.rotation.y -= 0.02;
-    linuxPlanet.rotation.y -= 0.02;
-    windowsPlanet.rotation.y -= 0.02;
+    macOsPlanet.rotation.y -= 0.01;
+    linuxPlanet.rotation.y -= 0.01;
+    windowsPlanet.rotation.y -= 0.01;
 
     updateMoons();
     rotateMoons();

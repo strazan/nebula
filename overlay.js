@@ -3,6 +3,7 @@ function off() {
   document.getElementById("overlay").style.display = "none";
 }
 //creates scene for overlay
+let  pivotPoint = new THREE.Object3D();
 let camera1, scene1, renderer1;
 init();
 animate();
@@ -10,8 +11,8 @@ animate();
 
 function init() {
 
-  camera1 = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 50);
-  camera1.position.z = 10;
+  camera1 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 50);
+  camera1.position.z = 8;
   camera1.position.y = 0.3;
   camera1.position.x = 0;
 
@@ -31,14 +32,16 @@ function init() {
 
     let material1 = new THREE.MeshBasicMaterial({ //material for font
       color: 0xebe5da,
-      opacity: 0.3
+      // opacity: 0.3
     });
+
     // material1.map = THREE.ImageUtils.loadTexture('images/skystar.png');
 
     material1.transparent = true; //this is for opacity to work
 
     let mesh1 = new THREE.Mesh(geometry1, material1);
-
+   
+    mesh1.add(pivotPoint);
 
 
     scene1.add(mesh1);
@@ -56,23 +59,25 @@ let createSphere = function () {
 
   let geometry2 = new THREE.SphereGeometry(1.6, 60, 60);
 
-  let materialSphere = new THREE.MeshPhysicalMaterial({
+  let materialSphere = new THREE.MeshPhongMaterial({
     color: 0xebe5da,
-    opacity: 0.55
+    // opacity: 0.55
   });
-  materialSphere.transparent = true;
+  // materialSphere.transparent = true;
   materialSphere.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg');
+  // materialSphere.bumpMap = THREE.ImageUtils.loadTexture('images/plutobump2k.jpg');
 
   let mesh2 = new THREE.Mesh(geometry2, materialSphere);
-  mesh2.position.x = 1.2;
-  mesh2.position.y = 1.2;
-  mesh2.position.z = 1.2;
+  mesh2.position.x = 2;
+  mesh2.position.y = 1.4;
+  mesh2.position.z = -1;
+  mesh2.rotation.y = 0.15;
 
+  pivotPoint.add(mesh2);
+  // scene1.add(mesh2);
 
-  scene1.add(mesh2);
-
-  let light2 = new THREE.SpotLight(0xebe5da, 0.4, 500)
-  light2.position.set(12, 0, 25);
+  let light2 = new THREE.SpotLight(0xebe5da, 0.1, 500)
+  light2.position.set(12, 10, 25);
   scene1.add(light2);
 
   let ambientLight = new THREE.AmbientLight(0xffffff);
@@ -81,8 +86,9 @@ let createSphere = function () {
   let render = function () {
     requestAnimationFrame(render);
 
-    mesh2.rotation.x += 0.001;
-    // mesh2.rotation.y += 0.001;
+    mesh2.rotation.x -= 0.0018;
+    pivotPoint.rotation.x += 0.0018;
+    mesh2.rotation.y += 0.002;
     // mesh2.rotation.z += 0.001;
     renderer1.render(scene1, camera1);
   }
@@ -123,11 +129,11 @@ function animation() {
 
 
     let material1 = new THREE.MeshBasicMaterial({ //material for font
-      color: 0xE5A774,
-      opacity: 0.5
+      color: 0xE5A774
+      // opacity: 0.5
     });
 
-    material1.transparent = true; //this is for opacity to work
+    // material1.transparent = true; //this is for opacity to work
 
     let mesh1 = new THREE.Mesh(geometry1, material1);
     scene1.add(mesh1);
