@@ -130,11 +130,15 @@ function update() {
 function render() {
     renderer.render(scene, camera);
 }
-let audio = new Audio("/audio/hearbeat.mp3"); //variable for mp3
+let audio = new Audio("/audio/hearbeat.mp3");
 
+// let isPlaying = true;
+
+let idGet = document.getElementById('overlay');
+
+// function audioPlay () {
 let isPlaying = false; //boolean for isPlaying
-
-let idGet = document.getElementById("overlay"); //variable for getting html element
+ //variable for getting html element
 
 idGet.addEventListener("click", function () {
     isPlaying = true;
@@ -149,11 +153,15 @@ function audioPlay() {
 function nebulaPulse() {
     nebulaGrow();
 
+
     // add sound method here Johan
 
     if (isPlaying) {
         audioPlay();
     } //checks if isPlaying is true
+
+      //add in nebulagrow instead
+
 }
 
 function nebulaGrow() {
@@ -168,6 +176,7 @@ function nebulaGrow() {
             clearInterval(grow);
             buffer = 0;
         }
+        
     }, 2);
 }
 
