@@ -569,15 +569,15 @@ var colorArr = {
 function colorShrink() {
     let cShrink = setInterval(function () {
 
-        if (colorArr.red > 5) {
+        if (colorArr.red > 45) {
             colorArr.red -= 5;
         } 
 
-        if (colorArr.green > 5) {
+        if (colorArr.green > 25) {
             colorArr.green-= 5;
         } 
         
-        if (colorArr.blue > 5) {
+        if (colorArr.blue > 15) {
             colorArr.blue -= 5;
         } 
 
@@ -599,7 +599,7 @@ colorShrink();
 
 
 function colorRed () {
-    if (colorArr.red < 235) {
+    if (colorArr.red < 155) {
         colorArr.red += 25;
     }
 }
