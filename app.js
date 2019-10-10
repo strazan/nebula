@@ -5,12 +5,15 @@ let scene = new THREE.Scene();
 let loader = new THREE.TextureLoader();
 let nebula;
 
+
+
 let ambient = new THREE.AmbientLight(0x555555);
 scene.add(ambient);
 
-let directionalLight = new THREE.DirectionalLight(0xffffaa, 0.9, 500);
+let directionalLight = new THREE.DirectionalLight(0xffffff, 0.9, 500);
 directionalLight.position.set(80, 80, 1200);
 scene.add(directionalLight);
+
 
 let orangeLight = new THREE.SpotLight(0xcc6600, 4, 2050);
 orangeLight.position.set(0, 100, 400);
@@ -24,9 +27,11 @@ let blueLight = new THREE.SpotLight(0x3677ac, 4, 2050);
 blueLight.position.set(-50, 100, 400);
 scene.add(blueLight);
 
+
 let osSolarSystemSunPivotPoint, osSolarSystemSun;
 let macOsPivotPoint;
 let macOsPlanet, linuxPlanet, windowsPlanet;
+
 
 // ?
 // let osSolarSystemLight = new THREE.SpotLight(0xffffff, 0.2, 350);
@@ -95,10 +100,13 @@ let onmessage = function (e) {
 
     if (os === 'linux' || os === 'linux-ppc64le') {
         osLinux++;
+        colorRed();
     } else if (os === 'osx') {
         osMacOs++;
+        colorGreen();
     } else if (os === 'windows') {
         osWindows++;
+        colorBlue();
     }
 
     let language = data.data.config.language;
@@ -138,7 +146,7 @@ let idGet = document.getElementById('overlay');
 
 // function audioPlay () {
 let isPlaying = false; //boolean for isPlaying
- //variable for getting html element
+//variable for getting html element
 
 idGet.addEventListener("click", function () {
     isPlaying = true;
@@ -160,9 +168,10 @@ function nebulaPulse() {
         audioPlay();
     } //checks if isPlaying is true
 
-      //add in nebulagrow instead
+    //add in nebulagrow instead
 
 }
+
 
 function nebulaGrow() {
     let grow = setInterval(function () {
@@ -170,13 +179,14 @@ function nebulaGrow() {
             nebula.scale.x += 0.002;
             nebula.scale.z += 0.002;
             nebula.scale.y += 0.002;
+
         }
 
         if (nebula.scale.x >= 0.8 + (buffer / 500)) {
             clearInterval(grow);
             buffer = 0;
         }
-        
+
     }, 2);
 }
 
@@ -228,10 +238,7 @@ function createOsSolarSystem() {
     /*
      * SUN
      */
-    // const sunGeo = new THREE.SphereGeometry(2, 60, 60);
-    // const sunMat = new THREE.MeshLambertMaterial();
-    // sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
-    // osSolarSystemSun = new THREE.Mesh(sunGeo, sunMat);
+
     osSolarSystemSun = new THREE.Object3D();
 
     osSolarSystemSun.position.x = 70;
@@ -484,15 +491,10 @@ function rotateMoons() {
 function rotateLangPlanets() {
     for (i = 0; i < languages.length; i++) {
         if (!languages[i].isHovered) {
-            // console.log(languages[i].isHovered);
-            // console.log(pp.isHovered);
             languages[i].pivotPoint.rotation.y += languages[i].speed;
-            // pp[0].rotation.y -= pp[1] / 400;
+
         }
     }
-    // languagesPivotPoints.forEach((pp) => {
-
-    // });
 }
 
 let isAnyHovered = false;
@@ -505,7 +507,7 @@ function onMouseMove(event) {
     mouse.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
-    // console.log(raycaster);
+
     var intersects = raycaster.intersectObjects(languagesPlanets, true);
 
     if (intersects.length === 0 && isAnyHovered) {
@@ -514,7 +516,7 @@ function onMouseMove(event) {
             l.isHovered = false;
         });
         isAnyHovered = false;
-      
+
 
     } else if (intersects.length !== 0 && !isAnyHovered) {
 
@@ -522,8 +524,6 @@ function onMouseMove(event) {
         obj.isHovered = true;
         isAnyHovered = true;
         showLanguageText(obj.name)
-        console.log(raycaster);
-
     }
 }
 // }
@@ -541,13 +541,13 @@ function showLanguageText(lang) {
 
         let material1 = new THREE.MeshBasicMaterial({ //material for font
             color: 0xE5A774,
-            opacity: 0.9
+            opacity: 0.6
         });
 
         material1.transparent = true; //this is for opacity to work
 
         languageText = new THREE.Mesh(geometry1, material1);
-        console.log(languageText);
+
         // languageText = languageText;
         scene.add(languageText);
     });
@@ -573,10 +573,10 @@ function shuffleArray(array) {
 }
 
 function getRandomColor() {
-    var letters = '3456789ABCDEF';
+    var letters = '23456789ABCDEF';
     var color = '';
     for (var i = 0; i < 4; i++) {
-        color += letters[Math.floor(Math.random() * 13)];
+        color += letters[Math.floor(Math.random() * 14)];
     }
     return '0xff' + color + '';
 }
@@ -600,6 +600,91 @@ function startWS() {
     };
 }
 
+
+
+function changeColor(red, green, blue) {
+
+    // Converter
+    var rgbToHex = function (rgb) {
+        var hex = Number(rgb).toString(16);
+        if (hex.length < 2) {
+            hex = "0" + hex;
+        }
+        return hex;
+    };
+
+    var fullColorHex = function (r, g, b) {
+        var rr = rgbToHex(r);
+        var gg = rgbToHex(g);
+        var bb = rgbToHex(b);
+        return "0x" + rr + gg + bb;
+    };
+
+    var hexColor = function (r, g, b) {
+        var hexC = parseInt(fullColorHex(r, g, b));
+        return hexC;
+    }
+
+    let r = hexColor(red, green, blue);
+    return r;
+}
+
+function hexColor(r, g, b) {
+    let hex = parseInt("0x" + changeColor(r, g, b));
+    return hex;
+}
+
+// array to contain color
+var colorArr = {
+    red: 255,
+    green: 255,
+    blue: 255
+};
+
+
+function colorShrink() {
+    setInterval(function () {
+
+        if (colorArr.red > 55) {
+            colorArr.red -= 1;
+        }
+
+        if (colorArr.green > 35) {
+            colorArr.green -= 1;
+        }
+
+        if (colorArr.blue > 5) {
+            colorArr.blue -= 1;
+        }
+
+        let hexColor = changeColor(colorArr.red, colorArr.green, colorArr.blue);
+        blueLight.color.setHex(hexColor);
+        orangeLight.color.setHex(hexColor);
+        redLight.color.setHex(hexColor);
+
+    }, 25);
+}
+
+
+function colorRed() {
+    if (colorArr.red < 155) {
+        colorArr.red += 15;
+    }
+}
+
+function colorGreen() {
+    if (colorArr.green < 155) {
+        colorArr.green += 15;
+    }
+}
+
+function colorBlue() {
+    if (colorArr.blue < 155) {
+        colorArr.blue += 15;
+    }
+}
+
+colorShrink();
 loop();
 
 setInterval(nebulaPulse, 3000);
