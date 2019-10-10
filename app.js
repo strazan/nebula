@@ -79,11 +79,11 @@ function audioPlay () {
 function nebulaPulse() {
     nebulaGrow();
 
-    // add sound method here Johan
+      //add in nebulagrow instead
     if(isPlaying){
         audioPlay();
     }
-     //add in nebulagrow instead
+   
 }
 
 function nebulaGrow() {
