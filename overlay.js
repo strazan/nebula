@@ -17,7 +17,7 @@ function off() {
       
       let loader1 = new THREE.FontLoader(); //loader for font
       loader1.load( 'https://threejs.org/examples/fonts/droid/droid_sans_regular.typeface.json', function ( font ) {
-        let geometry1 = new THREE.TextGeometry( 'Enter', {
+        let geometry1 = new THREE.TextGeometry( 'Enter.', {
         font: font,
         size: 0.5,
         height: 0.1,
