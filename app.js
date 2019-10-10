@@ -650,15 +650,15 @@ var colorArr = {
 function colorShrink() {
     setInterval(function () {
 
-        if (colorArr.red > 55) {
+        if (colorArr.red > 130) {
             colorArr.red -= 1;
         }
 
-        if (colorArr.green > 35) {
+        if (colorArr.green > 110) {
             colorArr.green -= 1;
         }
 
-        if (colorArr.blue > 5) {
+        if (colorArr.blue > 100) {
             colorArr.blue -= 1;
         }
 
