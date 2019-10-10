@@ -124,8 +124,21 @@ function update() {
 function render() {
     renderer.render(scene, camera);
 }
-let audio = new Audio("/audio/hearbeat.mp3");
+let audio = new Audio("/audio/hearbeat.mp3"); //variable for mp3
+
+let isPlaying = false; //boolean for isPlaying
+
+let idGet = document.getElementById("overlay"); //variable for getting html element
+
+idGet.addEventListener("click", function(){ 
+    isPlaying = true;
+ }); //listens for click and executes function
+
+
+
+
 function audioPlay () {
+
 
     audio.pause();
     audio.currentTime = 0;
@@ -133,11 +146,15 @@ function audioPlay () {
 
 }
 
+
 function nebulaPulse() {
     nebulaGrow();
 
     // add sound method here Johan
-    audioPlay();
+
+    if (isPlaying){
+        audioPlay();
+    } //checks if isPlaying is true
 }
 
 function nebulaGrow() {
@@ -485,6 +502,8 @@ function startWS() {
 }
 
 loop();
+
 setInterval(nebulaPulse, 3000);
 setInterval(updateLangPlanets, 100);
 startWS();
+
