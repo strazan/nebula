@@ -260,16 +260,14 @@ function createLanguageSolarSystem() {
     /*
      * Planets <3
      */
-
-
-
     scene.add(languageSolarSystemSun);
 }
 
 function createNewLanguagePlanet(obj) {
     const langPlanetGeo = new THREE.SphereGeometry(0.8, 70, 70);
-    const langPlanetMat = new THREE.MeshLambertMaterial();
-    langPlanetMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
+    const langPlanetMat = new THREE.MeshLambertMaterial({color: getRandomColor});
+    // langPlanetMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
+   
     let langPlanet = new THREE.Mesh(langPlanetGeo, langPlanetMat);
     languageSolarSystemSunPivotPoint.add(langPlanet);
 
@@ -455,6 +453,15 @@ function shuffleArray(array) {
     }
     return array;
 }
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return '0x' + color;
+  }
 
 
 function onWindowResize() {
