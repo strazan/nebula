@@ -538,7 +538,7 @@ function showLanguageText(lang) {
     loader1.load('https://threejs.org/examples/fonts/droid/droid_sans_regular.typeface.json', function (font) {
         let geometry1 = new THREE.TextGeometry(lang, {
             font: font,
-            size: 40,
+            size: 30,
             height: 0.1,
             curveSegments: 4,
         });
@@ -546,13 +546,13 @@ function showLanguageText(lang) {
 
         let material1 = new THREE.MeshBasicMaterial({ //material for font
             color: 0xE5A774,
-            opacity: 0.6
+            opacity: 0.3
         });
 
         material1.transparent = true; //this is for opacity to work
 
         languageText = new THREE.Mesh(geometry1, material1);
-
+        languageText.position.z = 200;
         // languageText = languageText;
         scene.add(languageText);
     });
