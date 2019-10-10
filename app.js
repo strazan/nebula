@@ -5,12 +5,15 @@ let scene = new THREE.Scene();
 let loader = new THREE.TextureLoader();
 let nebula;
 
+
+
 let ambient = new THREE.AmbientLight(0x555555);
 scene.add(ambient);
 
-let directionalLight = new THREE.DirectionalLight(0xffffaa, 0.9, 500);
+let directionalLight = new THREE.DirectionalLight(0xffffff, 0.9, 500);
 directionalLight.position.set(80, 80, 1200);
 scene.add(directionalLight);
+
 
 let orangeLight = new THREE.SpotLight(0xcc6600, 4, 2050);
 orangeLight.position.set(0, 100, 400);
@@ -22,11 +25,13 @@ scene.add(redLight);
 
 let blueLight = new THREE.SpotLight(0x3677ac, 4, 2050);
 blueLight.position.set(-50, 100, 400);
-scene.add(blueLight);
+scene.add(blueLight); 
+
 
 let osSolarSystemSunPivotPoint, osSolarSystemSun;
 let macOsPivotPoint;
 let macOsPlanet, linuxPlanet, windowsPlanet;
+
 
 // ?
 // let osSolarSystemLight = new THREE.SpotLight(0xffffff, 0.2, 350);
@@ -87,14 +92,18 @@ let onmessage = function (e) {
     if (e.data[0] != '{') return;
     buffer++;
     let data = JSON.parse(e.data);
+    console.log(data);
     let os = data.data.config.os;
 
     if (os === 'linux' || os === 'linux-ppc64le') {
         osLinux++;
+        colorRed();
     } else if (os === 'osx') {
         osMacOs++;
+        colorGreen();
     } else if (os === 'windows') {
         osWindows++;
+        colorBlue();
     }
 
     let language = data.data.config.language;
@@ -149,13 +158,15 @@ function audioPlay () {
 
 function nebulaPulse() {
     nebulaGrow();
-
     // add sound method here Johan
+
+    
 
     if (isPlaying){
         audioPlay();
     } //checks if isPlaying is true
 }
+
 
 function nebulaGrow() {
     let grow = setInterval(function () {
@@ -163,12 +174,14 @@ function nebulaGrow() {
             nebula.scale.x += 0.002;
             nebula.scale.z += 0.002;
             nebula.scale.y += 0.002;
+
         }
 
         if (nebula.scale.x >= 0.8 + (buffer / 500)) {
             clearInterval(grow);
             buffer = 0;
         }
+        
     }, 2);
 }
 
@@ -501,9 +514,104 @@ function startWS() {
     };
 }
 
+
 loop();
 
 setInterval(nebulaPulse, 3000);
 setInterval(updateLangPlanets, 100);
 startWS();
 
+//************************************************************* */
+//************************************************************* */
+//************************************************************* */
+//************************************************************* */
+
+function changeColor (red, green, blue) {  
+    
+    // Converter
+    var rgbToHex = function (rgb) { 
+        var hex = Number(rgb).toString(16);
+        if (hex.length < 2) {
+             hex = "0" + hex;
+        }
+        return hex;
+    };
+    
+    var fullColorHex = function(r,g,b) {   
+        var rr = rgbToHex(r);
+        var gg = rgbToHex(g);
+        var bb = rgbToHex(b);
+        return "0x" + rr + gg + bb;
+        };
+    
+    var hexColor = function(r,g,b) {
+        var hexC =  parseInt(fullColorHex(r,g,b));
+        return hexC;
+    }
+
+    let r = hexColor(red, green, blue);
+    return r;
+}
+
+function hexColor (r,g,b) {
+    let hex =  parseInt("0x" + changeColor(r, g, b));
+    return hex;
+}
+
+// array to contain color
+var colorArr = {
+    red: 255,
+    green: 255,
+    blue: 255
+};
+
+
+function colorShrink() {
+    let cShrink = setInterval(function () {
+
+        if (colorArr.red > 5) {
+            colorArr.red -= 5;
+        } 
+
+        if (colorArr.green > 5) {
+            colorArr.green-= 5;
+        } 
+        
+        if (colorArr.blue > 5) {
+            colorArr.blue -= 5;
+        } 
+
+      /*  if (colorArr.red < 6 && colorArr.blue < 6 && colorArr.green < 6 ) {
+            clearInterval(cShrink);
+        } */
+
+        let hexColor = changeColor(colorArr.red, colorArr.green, colorArr.blue);
+        blueLight.color.setHex(hexColor);
+        orangeLight.color.setHex(hexColor);
+        redLight.color.setHex(hexColor);
+    /*    console.log(hexColor);
+        console.log(colorArr) */
+
+    }, 25);
+}
+
+colorShrink();
+
+
+function colorRed () {
+    if (colorArr.red < 235) {
+        colorArr.red += 25;
+    }
+}
+
+function colorGreen () {
+    if (colorArr.green < 235) {
+        colorArr.green += 25;
+    }
+}
+
+function colorBlue () {
+    if (colorArr.blue < 235) {
+        colorArr.blue += 25;
+    }
+}
