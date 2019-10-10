@@ -78,8 +78,12 @@ let macOsPivotPoints = [];
 let windowsPivotPoints = [];
 
 let languages = [];
-let languagesPivotPoints = [];
+let languagesPlanets = [];
+let languageText;
+// let languagesPivotPoints = [];
 
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
 
 window.addEventListener('resize', onWindowResize, false);
 
@@ -98,7 +102,7 @@ let onmessage = function (e) {
     }
 
     let language = data.data.config.language;
-   
+
     let index = languages.findIndex((lang) => {
         return lang.name === language;
     });
@@ -108,6 +112,8 @@ let onmessage = function (e) {
         newLanguage(language);
     }
 }
+
+
 
 function loop() {
     requestAnimationFrame(loop);
@@ -130,29 +136,22 @@ let isPlaying = false; //boolean for isPlaying
 
 let idGet = document.getElementById("overlay"); //variable for getting html element
 
-idGet.addEventListener("click", function(){ 
+idGet.addEventListener("click", function () {
     isPlaying = true;
- }); //listens for click and executes function
+}); //listens for click and executes function
 
-
-
-
-function audioPlay () {
-
-
+function audioPlay() {
     audio.pause();
     audio.currentTime = 0;
     audio.play();
-
 }
-
 
 function nebulaPulse() {
     nebulaGrow();
 
     // add sound method here Johan
 
-    if (isPlaying){
+    if (isPlaying) {
         audioPlay();
     } //checks if isPlaying is true
 }
@@ -220,12 +219,13 @@ function createOsSolarSystem() {
     /*
      * SUN
      */
-    const sunGeo = new THREE.SphereGeometry(2, 60, 60);
-    const sunMat = new THREE.MeshLambertMaterial();
-    sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
-    osSolarSystemSun = new THREE.Mesh(sunGeo, sunMat);
+    // const sunGeo = new THREE.SphereGeometry(2, 60, 60);
+    // const sunMat = new THREE.MeshLambertMaterial();
+    // sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
+    // osSolarSystemSun = new THREE.Mesh(sunGeo, sunMat);
+    osSolarSystemSun = new THREE.Object3D();
 
-    osSolarSystemSun.position.x = 80;
+    osSolarSystemSun.position.x = 70;
     osSolarSystemSun.position.y = 40;
     osSolarSystemSun.position.z = 600;
 
@@ -270,13 +270,15 @@ function createOsSolarSystem() {
 
 }
 
-function createLanguageSolarSystem() {
-    const sunGeo = new THREE.SphereGeometry(2, 60, 60);
-    const sunMat = new THREE.MeshLambertMaterial();
-    sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
-    languageSolarSystemSun = new THREE.Mesh(sunGeo, sunMat);
 
-    languageSolarSystemSun.position.x = -80;
+function createLanguageSolarSystem() {
+    // const sunGeo = new THREE.SphereGeometry(2, 60, 60);
+    // const sunMat = new THREE.MeshLambertMaterial();
+    // sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
+    languageSolarSystemSun = new THREE.Object3D();
+    // Mesh(sunGeo, sunMat);
+
+    languageSolarSystemSun.position.x = -70;
     languageSolarSystemSun.position.y = -40;
     languageSolarSystemSun.position.z = 600;
 
@@ -291,28 +293,44 @@ function createLanguageSolarSystem() {
 
 function createNewLanguagePlanet(obj) {
     const langPlanetGeo = new THREE.SphereGeometry(0.8, 70, 70);
-    const langPlanetMat = new THREE.MeshLambertMaterial({color: getRandomColor});
+    let color = parseInt(getRandomColor());
+
+    const langPlanetMat = new THREE.MeshLambertMaterial({
+        color: color
+    });
     // langPlanetMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
-   
+
     let langPlanet = new THREE.Mesh(langPlanetGeo, langPlanetMat);
     languageSolarSystemSunPivotPoint.add(langPlanet);
-
+    languagesPlanets.push(langPlanet);
     obj.planet = langPlanet;
-    let pos =[[10, 0, -20], [10,0,20], [-10,0,20], [-10,0,-20]];
+    let pos = [
+        [10, 0, -20],
+        [10, 0, 20],
+        [-10, 0, 20],
+        [-10, 0, -20]
+    ];
     let p = pos[Math.floor(Math.random() * pos.length)];
     langPlanet.position.set(p[0], p[1], p[2]);
-    languages.push(obj);
- 
     let pivPoint = new THREE.Object3D();
-    let rotationSpeed =  Math.random() * 2 / 5000 + 0.001;
+    obj.pivotPoint = pivPoint;
+    // obj.isHovered = false;
+
+
+    let rotationSpeed = Math.random() * 2 / 5000 + 0.001;
     if (languages.length % 2 === 0) {
         rotationSpeed = -rotationSpeed;
     }
     pivPoint.rotation.x = Math.random() * 2;
     pivPoint.add(langPlanet);
     languageSolarSystemSun.add(pivPoint);
-    languagesPivotPoints.push([pivPoint, rotationSpeed]);
 
+    obj.pivotPoint = pivPoint;
+    obj.speed = rotationSpeed;
+    obj.isHovered = false;
+
+
+    languages.push(obj);
 }
 
 /*
@@ -399,15 +417,15 @@ function updateSolarSystems() {
     var time = Date.now() * 0.0001;
     osSolarSystemSun.position.x = osSolarSystemSun.position.x + Math.cos(time * 10) * 0.01;
     osSolarSystemSun.position.y = osSolarSystemSun.position.y + Math.cos(time * 70) * 0.015;
-    languageSolarSystemSun.position.x = languageSolarSystemSun.position.x + Math.cos(time * 10) * 0.01;
-    languageSolarSystemSun.position.y = languageSolarSystemSun.position.y + Math.cos(time * 70) * 0.015;
+    // languageSolarSystemSun.position.x = languageSolarSystemSun.position.x + Math.cos(time * 100) * 0.01;
+    // languageSolarSystemSun.position.y = languageSolarSystemSun.position.y + Math.cos(time * 700) * 0.015;
     // osSolarSystemSun.position.z = Math.cos( time * 8 ) * 4;
 
     osSolarSystemSunPivotPoint.rotation.y += 0.008;
     osSolarSystemSun.rotation.y -= 0.004;
 
     // languageSolarSystemSunPivotPoint.rotation.y -= 0.002;
-    languageSolarSystemSun.rotation.y += 0.004;
+    // languageSolarSystemSun.rotation.y += 0.004;
 
     macOsPlanet.rotation.y -= 0.02;
     linuxPlanet.rotation.y -= 0.02;
@@ -423,10 +441,10 @@ function updateLangPlanets() {
     let biggest = 0;
 
     languages.forEach(lang => {
-        if(lang.amount > biggest) {
+        if (lang.amount > biggest) {
             biggest = lang.amount;
         }
-        if(lang.amount < smallest){
+        if (lang.amount < smallest) {
             smallest = lang.amount;
         }
     });
@@ -454,10 +472,75 @@ function rotateMoons() {
     });
 }
 
-function rotateLangPlanets(){
-    languagesPivotPoints.forEach((pp) => {
-        pp[0].rotation.y += pp[1];
-        // pp[0].rotation.y -= pp[1] / 400;
+function rotateLangPlanets() {
+    for (i = 0; i < languages.length; i++) {
+        if (!languages[i].isHovered) {
+            // console.log(languages[i].isHovered);
+            // console.log(pp.isHovered);
+            languages[i].pivotPoint.rotation.y += languages[i].speed;
+            // pp[0].rotation.y -= pp[1] / 400;
+        }
+    }
+    // languagesPivotPoints.forEach((pp) => {
+
+    // });
+}
+
+let isAnyHovered = false;
+
+function onMouseMove(event) {
+    event.preventDefault();
+
+    var rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / (rect.width - rect.left)) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    // console.log(raycaster);
+    var intersects = raycaster.intersectObjects(languagesPlanets, true);
+
+    if (intersects.length === 0 && isAnyHovered) {
+        scene.remove(languageText);
+        languages.forEach(l => {
+            l.isHovered = false;
+        });
+        isAnyHovered = false;
+      
+
+    } else if (intersects.length !== 0 && !isAnyHovered) {
+
+        let obj = languages.find(lang => lang.planet === intersects[0].object);
+        obj.isHovered = true;
+        isAnyHovered = true;
+        showLanguageText(obj.name)
+        console.log(raycaster);
+
+    }
+}
+// }
+function showLanguageText(lang) {
+
+    let loader1 = new THREE.FontLoader(); //loader for font
+    loader1.load('https://threejs.org/examples/fonts/droid/droid_sans_regular.typeface.json', function (font) {
+        let geometry1 = new THREE.TextGeometry(lang, {
+            font: font,
+            size: 40,
+            height: 0.1,
+            curveSegments: 4,
+        });
+        geometry1.center();
+
+        let material1 = new THREE.MeshBasicMaterial({ //material for font
+            color: 0xE5A774,
+            opacity: 2
+        });
+
+        material1.transparent = true; //this is for opacity to work
+
+        languageText = new THREE.Mesh(geometry1, material1);
+        console.log(languageText);
+        // languageText = languageText;
+        scene.add(languageText);
     });
 }
 
@@ -481,13 +564,13 @@ function shuffleArray(array) {
 }
 
 function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+    var letters = '3456789ABCDEF';
+    var color = '';
+    for (var i = 0; i < 4; i++) {
+        color += letters[Math.floor(Math.random() * 13)];
     }
-    return '0x' + color;
-  }
+    return '0xff' + color + '';
+}
 
 
 function onWindowResize() {
@@ -512,5 +595,5 @@ loop();
 
 setInterval(nebulaPulse, 3000);
 setInterval(updateLangPlanets, 100);
+window.addEventListener('mousemove', onMouseMove);
 startWS();
-
