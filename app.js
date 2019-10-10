@@ -199,7 +199,7 @@ function createOsSolarSystem() {
     sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
     osSolarSystemSun = new THREE.Mesh(sunGeo, sunMat);
 
-    osSolarSystemSun.position.x = 40;
+    osSolarSystemSun.position.x = 80;
     osSolarSystemSun.position.y = 40;
     osSolarSystemSun.position.z = 600;
 
@@ -250,7 +250,7 @@ function createLanguageSolarSystem() {
     sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
     languageSolarSystemSun = new THREE.Mesh(sunGeo, sunMat);
 
-    languageSolarSystemSun.position.x = -40;
+    languageSolarSystemSun.position.x = -80;
     languageSolarSystemSun.position.y = -40;
     languageSolarSystemSun.position.z = 600;
 
@@ -280,7 +280,7 @@ function createNewLanguagePlanet(obj) {
     languages.push(obj);
  
     let pivPoint = new THREE.Object3D();
-    let rotationSpeed =  Math.random() * 2 / 500 + 0.004;
+    let rotationSpeed =  Math.random() * 2 / 5000 + 0.001;
     if (languages.length % 2 === 0) {
         rotationSpeed = -rotationSpeed;
     }
@@ -375,11 +375,11 @@ function updateSolarSystems() {
     var time = Date.now() * 0.0001;
     osSolarSystemSun.position.x = osSolarSystemSun.position.x + Math.cos(time * 10) * 0.01;
     osSolarSystemSun.position.y = osSolarSystemSun.position.y + Math.cos(time * 70) * 0.015;
-    languageSolarSystemSun.position.x = languageSolarSystemSun.position.y + Math.cos(time * 10) * 0.01;
-    languageSolarSystemSun.position.y = languageSolarSystemSun.position.x + Math.cos(time * 70) * 0.015;
+    languageSolarSystemSun.position.x = languageSolarSystemSun.position.x + Math.cos(time * 10) * 0.01;
+    languageSolarSystemSun.position.y = languageSolarSystemSun.position.y + Math.cos(time * 70) * 0.015;
     // osSolarSystemSun.position.z = Math.cos( time * 8 ) * 4;
 
-    osSolarSystemSunPivotPoint.rotation.y += 0.018;
+    osSolarSystemSunPivotPoint.rotation.y += 0.008;
     osSolarSystemSun.rotation.y -= 0.004;
 
     // languageSolarSystemSunPivotPoint.rotation.y -= 0.002;
