@@ -517,9 +517,16 @@ function onMouseMove(event) {
 
     if (intersects.length === 0 && isAnyHovered) {
         scene.remove(languageText);
-        languages.forEach(l => {
-            l.isHovered = false;
-        });
+        for (l = 0; l < languages.length; l++) {
+            if(languages[l].speed * languages[l].speed){
+                languages[l].speed /= 100;
+
+            }
+            languages[l].isHovered = false;
+        }
+    
+
+
         isAnyHovered = false;
 
 
@@ -527,8 +534,15 @@ function onMouseMove(event) {
 
         let obj = languages.find(lang => lang.planet === intersects[0].object);
         obj.isHovered = true;
+        for (l = 0; l < languages.length; l++) {
+            if (languages[l] !== obj) {
+                languages[l].speed *= 100;
+                console.log( languages[l].speed);
+            }
+        }
+
         isAnyHovered = true;
-        showLanguageText(obj.name)
+        showLanguageText(obj.name);
     }
 }
 // }

@@ -16,7 +16,7 @@ canvas {
 h2 {
     color: #fff;
     text-align: center;
-    font-size: 50px;
+    font-size: 51px;
 }
 
 .container {
@@ -25,7 +25,7 @@ h2 {
 .legend {
     position: absolute;
     width: 100%;
-    top: 94vh;
+    top: 194vh;
     color: #fff;
     font-size: 25px;
     font-family: 'Raleway', sans-serif;
