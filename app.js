@@ -18,7 +18,6 @@ let directionalLight = new THREE.DirectionalLight(0xffffff, 0.9, 500);
 directionalLight.position.set(80, 80, 1200);
 scene.add(directionalLight);
 
-
 let orangeLight = new THREE.SpotLight(0xcc6600, 4, 2050);
 orangeLight.position.set(0, 100, 400);
 scene.add(orangeLight);
@@ -31,16 +30,9 @@ let blueLight = new THREE.SpotLight(0x3677ac, 4, 2050);
 blueLight.position.set(-50, 100, 400);
 scene.add(blueLight);
 
-
 let osSolarSystemSunPivotPoint, osSolarSystemSun;
 let macOsPivotPoint;
 let macOsPlanet, linuxPlanet, windowsPlanet;
-
-
-// ?
-// let osSolarSystemLight = new THREE.SpotLight(0xffffff, 0.2, 350);
-// osSolarSystemLight.position.set(-40, 40, 900);
-// scene.add(osSolarSystemLight);
 
 let osSolarSystemSunLight = new THREE.PointLight(0xffffff, 3, 300);
 osSolarSystemSunLight.position.set(25, 38, 560);
@@ -68,7 +60,6 @@ createOsSolarSystem();
 createLanguageSolarSystem();
 
 let buffer = 0;
-
 let osMacOs = 0;
 let osLinux = 0;
 let osWindows = 0;
@@ -92,7 +83,6 @@ let languageText;
 
 let isAnyHovered = false;
 let toR1Lights = [];
-// let languagesPivotPoints = [];
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -128,8 +118,6 @@ let onmessage = function (e) {
     }
 }
 
-
-
 function loop() {
     requestAnimationFrame(loop);
     update();
@@ -140,7 +128,7 @@ function update() {
     nebulaShrink();
     rotateNebulaParts(cloudParticles);
     updateSolarSystems();
-   
+
 }
 
 function render() {
@@ -148,13 +136,9 @@ function render() {
 }
 let audio = new Audio("/audio/hearbeat.mp3");
 
-// let isPlaying = true;
-
 let idGet = document.getElementById('overlay');
 
-// function audioPlay () {
 let isPlaying = false; //boolean for isPlaying
-//variable for getting html element
 
 idGet.addEventListener("click", function () {
     isPlaying = true;
@@ -166,31 +150,28 @@ function audioPlay() {
     audio.play();
 }
 
+
 function nebulaPulse() {
     nebulaGrow();
     postColor([colorArr.red, colorArr.green, colorArr.blue]);
 
-    // add sound method here Johan
-
     if (isPlaying) {
         audioPlay();
     } //checks if isPlaying is true
-
-    //add in nebulagrow instead
-
 }
 
 
 function nebulaGrow() {
     let grow = setInterval(function () {
-        if (nebula.scale.x < 2) {
+        if (nebula.scale.x <= 1.3) {
+          
             nebula.scale.x += 0.002;
             nebula.scale.z += 0.002;
             nebula.scale.y += 0.002;
-
         }
 
         if (nebula.scale.x >= 0.8 + (buffer / 500)) {
+           
             clearInterval(grow);
             buffer = 0;
         }
@@ -199,10 +180,11 @@ function nebulaGrow() {
 }
 
 function nebulaShrink() {
-    if (nebula.scale.x > 0.3) {
+    if (nebula.scale.x >= 0.3) {
         nebula.scale.x -= 0.001;
         nebula.scale.z -= 0.001;
         nebula.scale.y -= 0.001;
+        console.log("shri")
     }
     nebula.rotation.z -= 0.0006;
 }
@@ -300,11 +282,8 @@ function createOsSolarSystem() {
 
 
 function createLanguageSolarSystem() {
-    // const sunGeo = new THREE.SphereGeometry(2, 60, 60);
-    // const sunMat = new THREE.MeshLambertMaterial();
-    // sunMat.map = THREE.ImageUtils.loadTexture('images/plutomap2k.jpg')
+
     languageSolarSystemSun = new THREE.Object3D();
-    // Mesh(sunGeo, sunMat);
 
     languageSolarSystemSun.position.x = -70;
     languageSolarSystemSun.position.y = -40;
@@ -327,7 +306,6 @@ function createNewLanguagePlanet(obj) {
         color: color
     });
     langPlanetMat.bumpMap = THREE.ImageUtils.loadTexture('images/venusbump.jpg');
-    // langPlanetMat.map = THREE.ImageUtils.loadTexture('images/uranusmap.jpg')
 
     let langPlanet = new THREE.Mesh(langPlanetGeo, langPlanetMat);
     languageSolarSystemSunPivotPoint.add(langPlanet);
@@ -339,12 +317,11 @@ function createNewLanguagePlanet(obj) {
         [-10, 0, 20],
         [-10, 0, -20]
     ];
+
     let p = pos[Math.floor(Math.random() * pos.length)];
     langPlanet.position.set(p[0], p[1], p[2]);
     let pivPoint = new THREE.Object3D();
     obj.pivotPoint = pivPoint;
-    // obj.isHovered = false;
-
 
     let rotationSpeed = Math.random() * 2 / 5000 + 0.001;
     if (languages.length % 2 === 0) {
@@ -356,7 +333,7 @@ function createNewLanguagePlanet(obj) {
 
     obj.pivotPoint = pivPoint;
     obj.speed = rotationSpeed;
-    if(isAnyHovered){
+    if (isAnyHovered) {
         rotationSpeed *= 100;
     }
     obj.isHovered = false;
@@ -366,12 +343,14 @@ function createNewLanguagePlanet(obj) {
 
 
 function postColor(color) {
-    for(i = 0; i < 24; i++){
-    fetch('https://ci-lights.azurewebsites.net/setcolor', {
+    for (i = 0; i < 24; i++) {
+        // fetch('http://192.168.0.157:8000/setcolor', {
+            fetch('https://ci-lights.azurewebsites.net/setcolor', {
             method: 'post',
             body: JSON.stringify({
                 id: `${i}`,
-                color: color,
+                color: [color[0] + (Math.floor(Math.random() * 50) +10), color[1] - (Math.floor(Math.random() * 30)), color[2] - (Math.floor(Math.random() * 30))],
+                // color: [200, 100, 100],
                 session: 'swag',
             }),
             headers: {
@@ -464,15 +443,9 @@ function updateSolarSystems() {
     var time = Date.now() * 0.0001;
     osSolarSystemSun.position.x = osSolarSystemSun.position.x + Math.cos(time * 10) * 0.01;
     osSolarSystemSun.position.y = osSolarSystemSun.position.y + Math.cos(time * 70) * 0.015;
-    // languageSolarSystemSun.position.x = languageSolarSystemSun.position.x + Math.cos(time * 100) * 0.01;
-    // languageSolarSystemSun.position.y = languageSolarSystemSun.position.y + Math.cos(time * 700) * 0.015;
-    // osSolarSystemSun.position.z = Math.cos( time * 8 ) * 4;
 
     osSolarSystemSunPivotPoint.rotation.y += 0.008;
     osSolarSystemSun.rotation.y -= 0.004;
-
-    // languageSolarSystemSunPivotPoint.rotation.y -= 0.002;
-    // languageSolarSystemSun.rotation.y += 0.004;
 
     macOsPlanet.rotation.y -= 0.01;
     linuxPlanet.rotation.y -= 0.01;
@@ -506,16 +479,13 @@ function updateLangPlanets() {
 
 function rotateMoons() {
     linusPivotPoints.forEach((pp) => {
-        pp[0].rotation.y += pp[1];
-        // pp[0].rotation.y -= pp[1] / 400;
+        pp[0].rotation.y += pp[1];  
     });
     macOsPivotPoints.forEach((pp) => {
-        pp[0].rotation.y += pp[1];
-        // pp[0].rotation.y -= pp[1] / 400;
+        pp[0].rotation.y += pp[1];   
     });
     windowsPivotPoints.forEach((pp) => {
         pp[0].rotation.y += pp[1];
-        // pp[0].rotation.y -= pp[1] / 400;
     });
 }
 
@@ -544,15 +514,10 @@ function onMouseMove(event) {
         for (l = 0; l < languages.length; l++) {
 
             languages[l].speed /= 100;
-
-
             languages[l].isHovered = false;
         }
 
-
-
         isAnyHovered = false;
-
 
     } else if (intersects.length !== 0 && !isAnyHovered) {
 
@@ -562,15 +527,13 @@ function onMouseMove(event) {
             if (languages[l] !== obj) {
                 languages[l].speed *= 100;
                 console.log(languages[l].speed);
-                
             }
         }
-
         isAnyHovered = true;
         showLanguageText(obj.name);
     }
 }
-// }
+
 function showLanguageText(lang) {
 
     let loader1 = new THREE.FontLoader(); //loader for font
@@ -644,8 +607,6 @@ function startWS() {
     };
 }
 
-
-
 function changeColor(red, green, blue) {
 
     // Converter
@@ -678,9 +639,6 @@ function hexColor(r, g, b) {
     return hex;
 }
 
-// array to contain color
-
-
 function colorShrink() {
     setInterval(function () {
 
@@ -688,15 +646,15 @@ function colorShrink() {
             colorArr.red -= 1;
         }
 
-        if (colorArr.green > 110) {
+        if (colorArr.green > 100) {
             colorArr.green -= 1;
         }
 
-        if (colorArr.blue > 100) {
+        if (colorArr.blue > 90) {
             colorArr.blue -= 1;
         }
 
-       
+
         let hexColor = changeColor(colorArr.red, colorArr.green, colorArr.blue);
         blueLight.color.setHex(hexColor);
         orangeLight.color.setHex(hexColor);
@@ -705,10 +663,9 @@ function colorShrink() {
     }, 25);
 }
 
-
 function colorRed() {
     if (colorArr.red < 195) {
-        colorArr.red += 15;
+        colorArr.red += 17;
     }
     // toR1Lights =[  colorArr.red, colorArr.green, colorArr.blue]
     // postColor(toR1Lights);
@@ -716,7 +673,7 @@ function colorRed() {
 
 function colorGreen() {
     if (colorArr.green < 185) {
-        colorArr.green += 15;
+        colorArr.green += 17;
     }
     // toR1Lights =[  colorArr.red, colorArr.green, colorArr.blue]
     // postColor(toR1Lights);
@@ -724,11 +681,11 @@ function colorGreen() {
 
 function colorBlue() {
     if (colorArr.blue < 175) {
-        colorArr.blue += 15;
+        colorArr.blue += 17;
     }
     // toR1Lights =[  colorArr.red, colorArr.green, colorArr.blue]
     // postColor(toR1Lights);
-   
+
 }
 
 colorShrink();
