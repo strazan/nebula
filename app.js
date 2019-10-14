@@ -5,7 +5,11 @@ let scene = new THREE.Scene();
 let loader = new THREE.TextureLoader();
 let nebula;
 
-
+var colorArr = {
+    red: 255,
+    green: 255,
+    blue: 255
+};
 
 let ambient = new THREE.AmbientLight(0x555555);
 scene.add(ambient);
@@ -85,6 +89,9 @@ let windowsPivotPoints = [];
 let languages = [];
 let languagesPlanets = [];
 let languageText;
+
+let isAnyHovered = false;
+let toR1Lights = [];
 // let languagesPivotPoints = [];
 
 var raycaster = new THREE.Raycaster();
@@ -133,6 +140,7 @@ function update() {
     nebulaShrink();
     rotateNebulaParts(cloudParticles);
     updateSolarSystems();
+   
 }
 
 function render() {
@@ -160,7 +168,7 @@ function audioPlay() {
 
 function nebulaPulse() {
     nebulaGrow();
-
+    postColor([colorArr.red, colorArr.green, colorArr.blue]);
 
     // add sound method here Johan
 
@@ -223,7 +231,7 @@ function createNebula() {
                 10 - Math.random() * 20,
                 300 - Math.random() * 1200);
 
-            cloud.rotation.y = 0.002;
+            // cloud.rotation.y = 0.002;
             cloud.rotation.z = Math.random() * 2 * Math.PI;
             cloud.material.opacity = 0.35;
             cloudParticles.push(cloud);
@@ -348,12 +356,30 @@ function createNewLanguagePlanet(obj) {
 
     obj.pivotPoint = pivPoint;
     obj.speed = rotationSpeed;
+    if(isAnyHovered){
+        rotationSpeed *= 100;
+    }
     obj.isHovered = false;
-
 
     languages.push(obj);
 }
 
+
+function postColor(color) {
+    for(i = 0; i < 24; i++){
+    fetch('https://ci-lights.azurewebsites.net/setcolor', {
+            method: 'post',
+            body: JSON.stringify({
+                id: `${i}`,
+                color: color,
+                session: 'swag',
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(res => console.log(res));
+    }
+}
 /*
  * Rotates att the nebula parts, in different speed for sick effect.
  */
@@ -502,8 +528,6 @@ function rotateLangPlanets() {
     }
 }
 
-let isAnyHovered = false;
-
 function onMouseMove(event) {
     event.preventDefault();
 
@@ -518,13 +542,13 @@ function onMouseMove(event) {
     if (intersects.length === 0 && isAnyHovered) {
         scene.remove(languageText);
         for (l = 0; l < languages.length; l++) {
-            if(languages[l].speed * languages[l].speed){
-                languages[l].speed /= 100;
 
-            }
+            languages[l].speed /= 100;
+
+
             languages[l].isHovered = false;
         }
-    
+
 
 
         isAnyHovered = false;
@@ -537,7 +561,8 @@ function onMouseMove(event) {
         for (l = 0; l < languages.length; l++) {
             if (languages[l] !== obj) {
                 languages[l].speed *= 100;
-                console.log( languages[l].speed);
+                console.log(languages[l].speed);
+                
             }
         }
 
@@ -654,11 +679,6 @@ function hexColor(r, g, b) {
 }
 
 // array to contain color
-var colorArr = {
-    red: 255,
-    green: 255,
-    blue: 255
-};
 
 
 function colorShrink() {
@@ -676,6 +696,7 @@ function colorShrink() {
             colorArr.blue -= 1;
         }
 
+       
         let hexColor = changeColor(colorArr.red, colorArr.green, colorArr.blue);
         blueLight.color.setHex(hexColor);
         orangeLight.color.setHex(hexColor);
@@ -686,21 +707,28 @@ function colorShrink() {
 
 
 function colorRed() {
-    if (colorArr.red < 155) {
+    if (colorArr.red < 195) {
         colorArr.red += 15;
     }
+    // toR1Lights =[  colorArr.red, colorArr.green, colorArr.blue]
+    // postColor(toR1Lights);
 }
 
 function colorGreen() {
-    if (colorArr.green < 155) {
+    if (colorArr.green < 185) {
         colorArr.green += 15;
     }
+    // toR1Lights =[  colorArr.red, colorArr.green, colorArr.blue]
+    // postColor(toR1Lights);
 }
 
 function colorBlue() {
-    if (colorArr.blue < 155) {
+    if (colorArr.blue < 175) {
         colorArr.blue += 15;
     }
+    // toR1Lights =[  colorArr.red, colorArr.green, colorArr.blue]
+    // postColor(toR1Lights);
+   
 }
 
 colorShrink();
